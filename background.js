@@ -2,7 +2,7 @@ var tabStates = {};
 var notificationStates = {};
 var nextNotificationId = 0;
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     var tabState = getTabState(tabId);
     var tabDomain = domainFor(tab.url);
     if (!tabDomain) {
@@ -18,7 +18,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 
         checkForPasswordInput(tabId, function (hasPasswordField) {
             if (hasPasswordField) {
-                checkDomainTrust(tabDomain, function(trusted) {
+                checkDomainTrust(tabDomain, function (trusted) {
                     if (!trusted) {
                         createNotification(tabId, tabState);
                     }
@@ -28,7 +28,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     }
 });
 
-chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex) {
+chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
     var notificationState = notificationStates[notificationId];
     if (notificationState) {
         switch (buttonIndex) {
@@ -40,7 +40,7 @@ chrome.notifications.onButtonClicked.addListener(function(notificationId, button
                 console.log("User clicked NO for " + notificationState.domain);
                 break;
         }
-        chrome.notifications.clear(notificationId, function() {
+        chrome.notifications.clear(notificationId, function () {
             notificationStates[notificationId] = null;
         });
     }
@@ -103,7 +103,7 @@ function createNotification(tabId, tabState) {
             {title: "I'm not sure..."}
         ],
         requireInteraction: true
-    }, function(notificationId) {
+    }, function (notificationId) {
         tabState.notificationId = notificationId;
         notificationStates[notificationId] = {
             domain: currentDomain,
